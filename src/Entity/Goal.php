@@ -16,6 +16,10 @@ class Goal
     #[ORM\Column]
     private ?int $minute = null;
 
+    #[ORM\ManyToOne(inversedBy: 'goals')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Player $player = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -29,6 +33,18 @@ class Goal
     public function setMinute(int $minute): static
     {
         $this->minute = $minute;
+
+        return $this;
+    }
+
+    public function getPlayer(): ?Player
+    {
+        return $this->player;
+    }
+
+    public function setPlayer(?Player $player): static
+    {
+        $this->player = $player;
 
         return $this;
     }

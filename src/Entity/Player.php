@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PlayerRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -44,6 +46,24 @@ class Player
     #[ORM\ManyToOne(inversedBy: 'players')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Team $team = null;
+
+    /**
+     * @var Collection<int, Goal>
+     */
+    #[ORM\OneToMany(targetEntity: Goal::class, mappedBy: 'player')]
+    private Collection $goals;
+
+    /**
+     * @var Collection<int, Assist>
+     */
+    #[ORM\OneToMany(targetEntity: Assist::class, mappedBy: 'player')]
+    private Collection $assists;
+
+    public function __construct()
+    {
+        $this->goals = new ArrayCollection();
+        $this->assists = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -166,6 +186,66 @@ class Player
     public function setTeam(?Team $team): static
     {
         $this->team = $team;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Goal>
+     */
+    public function getGoals(): Collection
+    {
+        return $this->goals;
+    }
+
+    public function addGoal(Goal $goal): static
+    {
+        if (!$this->goals->contains($goal)) {
+            $this->goals->add($goal);
+            $goal->setPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGoal(Goal $goal): static
+    {
+        if ($this->goals->removeElement($goal)) {
+            // set the owning side to null (unless already changed)
+            if ($goal->getPlayer() === $this) {
+                $goal->setPlayer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Assist>
+     */
+    public function getAssists(): Collection
+    {
+        return $this->assists;
+    }
+
+    public function addAssist(Assist $assist): static
+    {
+        if (!$this->assists->contains($assist)) {
+            $this->assists->add($assist);
+            $assist->setPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAssist(Assist $assist): static
+    {
+        if ($this->assists->removeElement($assist)) {
+            // set the owning side to null (unless already changed)
+            if ($assist->getPlayer() === $this) {
+                $assist->setPlayer(null);
+            }
+        }
 
         return $this;
     }
