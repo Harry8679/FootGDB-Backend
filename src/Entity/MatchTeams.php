@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\MatchTeamsRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MatchTeamsRepository::class)]
@@ -24,6 +26,17 @@ class MatchTeams
 
     #[ORM\ManyToOne(inversedBy: 'matchesAway')]
     private ?Team $awayTeam = null;
+
+    /**
+     * @var Collection<int, Goal>
+     */
+    #[ORM\OneToMany(targetEntity: Goal::class, mappedBy: 'matchTeams')]
+    private Collection $goals;
+
+    public function __construct()
+    {
+        $this->goals = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -74,6 +87,36 @@ class MatchTeams
     public function setAwayTeam(?Team $awayTeam): static
     {
         $this->awayTeam = $awayTeam;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Goal>
+     */
+    public function getGoals(): Collection
+    {
+        return $this->goals;
+    }
+
+    public function addGoal(Goal $goal): static
+    {
+        if (!$this->goals->contains($goal)) {
+            $this->goals->add($goal);
+            $goal->setMatchTeams($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGoal(Goal $goal): static
+    {
+        if ($this->goals->removeElement($goal)) {
+            // set the owning side to null (unless already changed)
+            if ($goal->getMatchTeams() === $this) {
+                $goal->setMatchTeams(null);
+            }
+        }
 
         return $this;
     }
