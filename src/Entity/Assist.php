@@ -17,6 +17,9 @@ class Assist
     #[ORM\JoinColumn(nullable: false)]
     private ?Player $player = null;
 
+    #[ORM\ManyToOne(inversedBy: 'assists')]
+    private ?Goal $goal = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -30,6 +33,18 @@ class Assist
     public function setPlayer(?Player $player): static
     {
         $this->player = $player;
+
+        return $this;
+    }
+
+    public function getGoal(): ?Goal
+    {
+        return $this->goal;
+    }
+
+    public function setGoal(?Goal $goal): static
+    {
+        $this->goal = $goal;
 
         return $this;
     }
