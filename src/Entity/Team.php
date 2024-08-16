@@ -39,9 +39,23 @@ class Team
     #[ORM\OneToMany(targetEntity: Player::class, mappedBy: 'team')]
     private Collection $players;
 
+    /**
+     * @var Collection<int, MatchTeams>
+     */
+    #[ORM\OneToMany(targetEntity: MatchTeams::class, mappedBy: 'homeTeam')]
+    private Collection $matchesHome;
+
+    /**
+     * @var Collection<int, MatchTeams>
+     */
+    #[ORM\OneToMany(targetEntity: MatchTeams::class, mappedBy: 'awayTeam')]
+    private Collection $matchesAway;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
+        $this->matchesHome = new ArrayCollection();
+        $this->matchesAway = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -145,6 +159,66 @@ class Team
             // set the owning side to null (unless already changed)
             if ($player->getTeam() === $this) {
                 $player->setTeam(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MatchTeams>
+     */
+    public function getMatchesHome(): Collection
+    {
+        return $this->matchesHome;
+    }
+
+    public function addMatchesHome(MatchTeams $matchesHome): static
+    {
+        if (!$this->matchesHome->contains($matchesHome)) {
+            $this->matchesHome->add($matchesHome);
+            $matchesHome->setHomeTeam($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMatchesHome(MatchTeams $matchesHome): static
+    {
+        if ($this->matchesHome->removeElement($matchesHome)) {
+            // set the owning side to null (unless already changed)
+            if ($matchesHome->getHomeTeam() === $this) {
+                $matchesHome->setHomeTeam(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MatchTeams>
+     */
+    public function getMatchesAway(): Collection
+    {
+        return $this->matchesAway;
+    }
+
+    public function addMatchesAway(MatchTeams $matchesAway): static
+    {
+        if (!$this->matchesAway->contains($matchesAway)) {
+            $this->matchesAway->add($matchesAway);
+            $matchesAway->setAwayTeam($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMatchesAway(MatchTeams $matchesAway): static
+    {
+        if ($this->matchesAway->removeElement($matchesAway)) {
+            // set the owning side to null (unless already changed)
+            if ($matchesAway->getAwayTeam() === $this) {
+                $matchesAway->setAwayTeam(null);
             }
         }
 

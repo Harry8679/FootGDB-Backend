@@ -19,6 +19,12 @@ class MatchTeams
     #[ORM\Column]
     private ?int $awayScore = null;
 
+    #[ORM\ManyToOne(inversedBy: 'matchesHome')]
+    private ?Team $homeTeam = null;
+
+    #[ORM\ManyToOne(inversedBy: 'matchesAway')]
+    private ?Team $awayTeam = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +50,30 @@ class MatchTeams
     public function setAwayScore(int $awayScore): static
     {
         $this->awayScore = $awayScore;
+
+        return $this;
+    }
+
+    public function getHomeTeam(): ?Team
+    {
+        return $this->homeTeam;
+    }
+
+    public function setHomeTeam(?Team $homeTeam): static
+    {
+        $this->homeTeam = $homeTeam;
+
+        return $this;
+    }
+
+    public function getAwayTeam(): ?Team
+    {
+        return $this->awayTeam;
+    }
+
+    public function setAwayTeam(?Team $awayTeam): static
+    {
+        $this->awayTeam = $awayTeam;
 
         return $this;
     }
