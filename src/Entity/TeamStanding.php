@@ -31,12 +31,15 @@ class TeamStanding
     #[ORM\Column]
     private ?int $lost = null;
 
+    // Les buts marqués
     #[ORM\Column]
     private ?int $goalsFor = null;
 
+    // Les buts encaissés
     #[ORM\Column]
     private ?int $goalsAgainst = null;
 
+    // Différences : goal average
     #[ORM\Column]
     private ?int $goalDifference = null;
 
