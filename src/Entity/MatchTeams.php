@@ -33,6 +33,9 @@ class MatchTeams
     #[ORM\OneToMany(targetEntity: Goal::class, mappedBy: 'matchTeams')]
     private Collection $goals;
 
+    #[ORM\ManyToOne(inversedBy: 'matches')]
+    private ?MatchDay $matchDay = null;
+
     public function __construct()
     {
         $this->goals = new ArrayCollection();
@@ -117,6 +120,18 @@ class MatchTeams
                 $goal->setMatchTeams(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMatchDay(): ?MatchDay
+    {
+        return $this->matchDay;
+    }
+
+    public function setMatchDay(?MatchDay $matchDay): static
+    {
+        $this->matchDay = $matchDay;
 
         return $this;
     }
